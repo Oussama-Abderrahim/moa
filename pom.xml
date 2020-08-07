@@ -4,7 +4,7 @@
   <groupId>nz.ac.waikato.cms.moa</groupId>
   <artifactId>moa-pom</artifactId>
   <packaging>pom</packaging>
-  <version>2019.05.1-SNAPSHOT</version>
+  <version>2020.07.2-SNAPSHOT</version>
 
   <name>MOA: meta-package</name>
   <description>
@@ -81,7 +81,7 @@
       <dependency>
         <groupId>com.github.waikato</groupId>
         <artifactId>jclasslocator</artifactId>
-        <version>0.0.15</version>
+        <version>0.0.18</version>
       </dependency>
 
       <dependency>
@@ -93,7 +93,7 @@
       <dependency>
         <groupId>com.github.waikato</groupId>
         <artifactId>fcms-widgets</artifactId>
-        <version>0.0.17</version>
+        <version>0.0.19</version>
       </dependency>
 
       <dependency>
@@ -116,6 +116,10 @@
           <exclusion>
             <groupId>com.googlecode.jfilechooser-bookmarks</groupId>
             <artifactId>jfilechooser-bookmarks</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.jidesoft</groupId>
+            <artifactId>jide-oss</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
