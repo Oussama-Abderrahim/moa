@@ -1,6 +1,6 @@
 /*
  *    ReadFile.java
- *    Copyright (C) 2007 University of Waikato, Hamilton, New Zealand 
+ *    Copyright (C) 2007 University of Waikato, Hamilton, New Zealand
  *    @author Alberto Verdecia Cabrera (averdeciac@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  *    You should have received a copy of the GNU General Public License
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
- *    
+ *
  */
 package moa.gui.experimentertab;
 
@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -47,6 +48,7 @@ public class ReadFile {
     private LinkedList<String> measures;
     private ArrayList<String> algShortNames;
     private List<Algorithm> algorithm = new ArrayList<>();
+
     /**
      * File Constructor
      *
@@ -95,37 +97,40 @@ public class ReadFile {
                         BufferedReader br = new BufferedReader(fr);
                         try {
                             String line = br.readLine();
-                            if (addFirst) {
-                                measures.add(line);
-                                addFirst = false;
-                            } else if (measures.remove(line)) {
-                                measures.add(line);
-                            } else {
-                                String lineArray[] = line.split(",");
-                                String measureArray[] = measures.getFirst().split(",");
-                                String newMeasure = "";
-                                for (int l = 0; l < lineArray.length; l++) {
-                                    for (int m = 0; m < measureArray.length; m++) {
-                                        if (lineArray[l].equals(measureArray[m])) {
-                                            newMeasure += lineArray[l] + ",";
-                                        }
+                            if (line != null) {
+                                if (addFirst) {
+                                    measures.add(line);
+                                    addFirst = false;
+                                } else if (measures.remove(line)) {
+                                    measures.add(line);
+                                } else {
+                                    String lineArray[] = line.split(",");
+                                    String measureArray[] = measures.getFirst().split(",");
+                                    String newMeasure = "";
+                                    for (int l = 0; l < lineArray.length; l++) {
+                                        for (int m = 0; m < measureArray.length; m++) {
+                                            if (lineArray[l].equals(measureArray[m])) {
+                                                newMeasure += lineArray[l] + ",";
+                                            }
 
-                                    }
-                                }
-                                String s[];
-                                if (newMeasure.endsWith(",")) {
-                                    s = newMeasure.split(",");
-                                    newMeasure = "";
-                                    for (int k = 0; k < s.length; k++) {
-                                        newMeasure += s[k];
-                                        if (k != s.length - 1) {
-                                            newMeasure += ",";
                                         }
                                     }
+                                    String s[];
+                                    if (newMeasure.endsWith(",")) {
+                                        s = newMeasure.split(",");
+                                        newMeasure = "";
+                                        for (int k = 0; k < s.length; k++) {
+                                            newMeasure += s[k];
+                                            if (k != s.length - 1) {
+                                                newMeasure += ",";
+                                            }
+                                        }
+                                    }
+
+                                    measures.removeFirst();
+                                    measures.add(newMeasure);
                                 }
 
-                                measures.removeFirst();
-                                measures.add(newMeasure);
                             }
 
                         } catch (IOException ex) {
@@ -198,26 +203,26 @@ public class ReadFile {
         }
         return null;
     }
-    
-    static int getMeasureIndex(String algPath, String mesasure){
-          
-             FileReader fr = null;
+
+    static int getMeasureIndex(String algPath, String mesasure) {
+
+        FileReader fr = null;
         try {
             fr = new FileReader(new File(algPath));
             BufferedReader br = new BufferedReader(fr);
-             String line = br.readLine();
-                 String measures[] = line.split(",");
-                 for(int i = 0; i < measures.length; i++){
-                      if(measures[i].equals(mesasure)==true)
-                          return i;
-                 }
-            
+            String line = br.readLine();
+            String measures[] = line.split(",");
+            for (int i = 0; i < measures.length; i++) {
+                if (measures[i].equals(mesasure) == true)
+                    return i;
+            }
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ReadFile.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(ReadFile.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return 0;
     }
     
@@ -245,6 +250,7 @@ public class ReadFile {
              this.algorithm.add(algorithm);
          }
     }*/
+
     /**
      * Returns the name of the algorithms.
      *
@@ -329,8 +335,8 @@ public class ReadFile {
         ArrayList<String[]> data = new ArrayList<>();
 
         try (FileInputStream csv = new FileInputStream(path);
-                InputStreamReader reader = new InputStreamReader(csv);
-                BufferedReader br = new BufferedReader(reader)) {
+             InputStreamReader reader = new InputStreamReader(csv);
+             BufferedReader br = new BufferedReader(reader)) {
 
             String linea = br.readLine();
 
