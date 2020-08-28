@@ -990,13 +990,13 @@ public class HybridEFDT extends AbstractClassifier implements MultiClassClassifi
                 // given the current implementations in MOA, we're only ever expecting one int to be returned
             }
 
-            //compute Hoeffding bound
             SplitCriterion firstSplitCriterion = (SplitCriterion) getPreparedClassOption(HybridEFDT.this.splitCriterionOption);
             SplitCriterion secondSplitCriterion = (SplitCriterion) getPreparedClassOption(HybridEFDT.this.secondSplitCriterionOption);
 
             SplitCriterion[] splitCriteria = {firstSplitCriterion, secondSplitCriterion};
 
             for (SplitCriterion splitCriterion : splitCriteria) {
+                //compute Hoeffding bound
                 double range = splitCriterion.getRangeOfMerit(node.getClassDistributionAtTimeOfCreation());
                 double hoeffdingBound = computeHoeffdingBound(range, HybridEFDT.this.splitConfidenceOption.getValue(), node.observedClassDistribution.sumOfValues());
 
@@ -1046,7 +1046,7 @@ public class HybridEFDT extends AbstractClassifier implements MultiClassClassifi
                 // compute the average deltaG
                 double deltaG = bestSuggestionAverageMerit - currentAverageMerit;
 
-                if (deltaG > hoeffdingBound || (hoeffdingBound < tieThreshold && deltaG > tieThreshold / 2)) { ///TODO: Add disjonction for second criteria
+                if (deltaG > hoeffdingBound || (hoeffdingBound < tieThreshold && deltaG > tieThreshold / 2)) {
 
                     System.err.println(numInstances);
 
@@ -1120,6 +1120,7 @@ public class HybridEFDT extends AbstractClassifier implements MultiClassClassifi
                             parent.setChild(parentIndex, newSplit);
                         }
                     }
+                    break;
                 }
             }
         }

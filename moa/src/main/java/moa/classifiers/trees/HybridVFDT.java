@@ -768,8 +768,7 @@ public class HybridVFDT extends AbstractClassifier implements MultiClassClassifi
                 }
 
                 // }
-                if ((this.removePoorAttsOption != null)
-                        && this.removePoorAttsOption.isSet()) {
+                if ((this.removePoorAttsOption != null) && this.removePoorAttsOption.isSet()) {
                     Set<Integer> poorAtts = new HashSet<Integer>();
                     // scan 1 - add any poor to set
                     for (int i = 0; i < bestSplitSuggestions.length; i++) {
@@ -788,8 +787,7 @@ public class HybridVFDT extends AbstractClassifier implements MultiClassClassifi
                         if (bestSplitSuggestions[i].splitTest != null) {
                             int[] splitAtts = bestSplitSuggestions[i].splitTest.getAttsTestDependsOn();
                             if (splitAtts.length == 1) {
-                                if (bestSuggestion.merit
-                                        - bestSplitSuggestions[i].merit < hoeffdingBound) {
+                                if (bestSuggestion.merit - bestSplitSuggestions[i].merit < hoeffdingBound) {
                                     poorAtts.remove(new Integer(splitAtts[0]));
                                 }
                             }
