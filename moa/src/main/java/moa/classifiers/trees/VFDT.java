@@ -675,7 +675,8 @@ public class VFDT extends AbstractClassifier implements MultiClassClassifier, Ca
         return false;
     }
 
-    public static double computeHoeffdingBound(double range, double confidence,
+
+    public double computeHoeffdingBound(double range, double confidence,
             double n) {
         return Math.sqrt(((range * range) * Math.log(1.0 / confidence))
                 / (2.0 * n));
