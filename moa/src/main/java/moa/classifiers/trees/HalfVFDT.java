@@ -26,7 +26,6 @@ public class HalfVFDT extends VFDT {
 
     @Override
     public double computeHoeffdingBound(double range, double confidence, double n) {
-        System.err.println("Half Hoeffding computed");
         return super.computeHoeffdingBound(range, confidence, n) * 0.5;
     }
 }

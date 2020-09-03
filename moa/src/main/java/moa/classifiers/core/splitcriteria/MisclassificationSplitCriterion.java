@@ -47,12 +47,12 @@ public class MisclassificationSplitCriterion extends AbstractOptionHandler imple
             distWeights[i] = Utils.sum(postSplitDists[i]);
             totalWeight += distWeights[i];
         }
-        double gini = 0.0;
+        double gain = 0.0;
         for (int i = 0; i < postSplitDists.length; i++) {
-            gini += (distWeights[i] / totalWeight)
+            gain += (distWeights[i] / totalWeight)
                     * computeMisclassificationError(postSplitDists[i], distWeights[i]);
         }
-        return 1.0 - gini;
+        return 1.0 - gain;
     }
 
     @Override

@@ -1,12 +1,11 @@
 /**
  * Author: Chaitanya Manapragada.
- *
+ * <p>
  * Based on HoeffdingTree.java by Richard Kirkby.
- *
+ * <p>
  * There is a lot of code repetition from VFDT.java. This needs to be fixed as per DRY principles.
- *
+ * <p>
  * Research code written to test the EFDT idea.
- *
  */
 
 
@@ -32,7 +31,7 @@ import moa.classifiers.core.splitcriteria.SplitCriterion;
 import moa.core.AutoExpandVector;
 
 
-public class EFDT extends VFDT{
+public class EFDT extends VFDT {
 
 
     public IntOption reEvalPeriodOption = new IntOption(
@@ -45,16 +44,18 @@ public class EFDT extends VFDT{
     public interface EFDTNode {
 
         public boolean isRoot();
+
         public void setRoot(boolean isRoot);
 
         public void learnFromInstance(Instance inst, EFDT ht, EFDTSplitNode parent, int parentBranch);
+
         public void setParent(EFDTSplitNode parent);
 
         public EFDTSplitNode getParent();
 
     }
 
-    public class EFDTSplitNode extends SplitNode implements EFDTNode{
+    public class EFDTSplitNode extends SplitNode implements EFDTNode {
 
         /**
          *
@@ -93,16 +94,13 @@ public class EFDT extends VFDT{
                     //Recursive delete of SplitNodes
                     if (child instanceof SplitNode) {
                         ((EFDTSplitNode) child).killSubtree(ht);
-                    }
-                    else if (child instanceof ActiveLearningNode) {
+                    } else if (child instanceof ActiveLearningNode) {
                         child = null;
                         ht.activeLeafNodeCount--;
-                    }
-                    else if (child instanceof InactiveLearningNode) {
+                    } else if (child instanceof InactiveLearningNode) {
                         child = null;
                         ht.inactiveLeafNodeCount--;
-                    }
-                    else{
+                    } else {
 
                     }
                 }
@@ -154,7 +152,7 @@ public class EFDT extends VFDT{
             }
 
             // check if a better split is available. if so, chop the tree at this point, copying likelihood. predictors for children are from parent likelihood.
-            if(ht.numInstances % ht.reEvalPeriodOption.getValue() == 0){
+            if (ht.numInstances % ht.reEvalPeriodOption.getValue() == 0) {
                 this.reEvaluateBestSplit(this, parent, parentBranch);
             }
 
@@ -171,9 +169,6 @@ public class EFDT extends VFDT{
                                            int parentIndex) {
 
 
-
-
-
             node.addToSplitAttempts(1);
 
             // EFDT must transfer over gain averages when replacing a node: leaf to split, split to leaf, or split to split
@@ -187,10 +182,10 @@ public class EFDT extends VFDT{
 
             //lets first find out X_a, the current split
 
-            if(this.splitTest != null){
+            if (this.splitTest != null) {
                 currentSplit = this.splitTest.getAttsTestDependsOn()[0];
                 // given the current implementations in MOA, we're only ever expecting one int to be returned
-            } else{ // there is no split, split is null
+            } else { // there is no split, split is null
                 currentSplit = -1;
             }
 
@@ -207,19 +202,15 @@ public class EFDT extends VFDT{
             AttributeSplitSuggestion bestSuggestion = bestSplitSuggestions[bestSplitSuggestions.length - 1];
 
 
+            for (int i = 0; i < bestSplitSuggestions.length; i++) {
 
-            for (int i = 0; i < bestSplitSuggestions.length; i++){
-
-                if (bestSplitSuggestions[i].splitTest != null){
-                    if (!node.getInfogainSum().containsKey((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0])))
-                    {
+                if (bestSplitSuggestions[i].splitTest != null) {
+                    if (!node.getInfogainSum().containsKey((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]))) {
                         node.getInfogainSum().put((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]), 0.0);
                     }
                     double currentSum = node.getInfogainSum().get((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]));
                     node.getInfogainSum().put((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]), currentSum + bestSplitSuggestions[i].merit);
-                }
-
-                else { // handle the null attribute. this is fine to do- it'll always average zero, and we will use this later to potentially burn bad splits.
+                } else { // handle the null attribute. this is fine to do- it'll always average zero, and we will use this later to potentially burn bad splits.
                     double currentSum = node.getInfogainSum().get(-1); // null split
                     node.getInfogainSum().put(-1, currentSum + bestSplitSuggestions[i].merit);
                 }
@@ -231,17 +222,17 @@ public class EFDT extends VFDT{
             double bestSuggestionAverageMerit = 0.0;
             double currentAverageMerit = 0.0;
 
-            if(bestSuggestion.splitTest == null) { // best is null
-                bestSuggestionAverageMerit = node.getInfogainSum().get(-1)/node.getNumSplitAttempts();
+            if (bestSuggestion.splitTest == null) { // best is null
+                bestSuggestionAverageMerit = node.getInfogainSum().get(-1) / node.getNumSplitAttempts();
             } else {
 
-                bestSuggestionAverageMerit = node.getInfogainSum().get(bestSuggestion.splitTest.getAttsTestDependsOn()[0])/node.getNumSplitAttempts();
+                bestSuggestionAverageMerit = node.getInfogainSum().get(bestSuggestion.splitTest.getAttsTestDependsOn()[0]) / node.getNumSplitAttempts();
             }
 
-            if(node.splitTest == null) { // current is null- shouldn't happen, check for robustness
-                currentAverageMerit = node.getInfogainSum().get(-1)/node.getNumSplitAttempts();
+            if (node.splitTest == null) { // current is null- shouldn't happen, check for robustness
+                currentAverageMerit = node.getInfogainSum().get(-1) / node.getNumSplitAttempts();
             } else {
-                currentAverageMerit = node.getInfogainSum().get(node.splitTest.getAttsTestDependsOn()[0])/node.getNumSplitAttempts();
+                currentAverageMerit = node.getInfogainSum().get(node.splitTest.getAttsTestDependsOn()[0]) / node.getNumSplitAttempts();
             }
 
             double tieThreshold = EFDT.this.tieThresholdOption.getValue();
@@ -257,35 +248,33 @@ public class EFDT extends VFDT{
                 AttributeSplitSuggestion splitDecision = bestSuggestion;
 
                 // if null split wins
-                if(splitDecision.splitTest == null){
+                if (splitDecision.splitTest == null) {
 
                     node.killSubtree(EFDT.this);
-                    EFDTLearningNode replacement = (EFDTLearningNode)newLearningNode();
+                    EFDTLearningNode replacement = (EFDTLearningNode) newLearningNode();
                     replacement.setInfogainSum(node.getInfogainSum()); // transfer infogain history, split to replacement leaf
-                    if(node.getParent() != null){
+                    if (node.getParent() != null) {
                         node.getParent().setChild(parentIndex, replacement);
                     } else {
-                        assert(node.getParent().isRoot());
+                        assert (node.getParent().isRoot());
                         node.setRoot(true);
                     }
-                }
-
-                else {
+                } else {
 
                     Node newSplit = newSplitNode(splitDecision.splitTest,
                             node.getObservedClassDistribution(), splitDecision.numSplits());
 
-                    ((EFDTSplitNode)newSplit).attributeObservers = node.attributeObservers; // copy the attribute observers
+                    ((EFDTSplitNode) newSplit).attributeObservers = node.attributeObservers; // copy the attribute observers
                     newSplit.setInfogainSum(node.getInfogainSum());  // transfer infogain history, split to replacement split
 
                     if (node.splitTest == splitDecision.splitTest
                             && node.splitTest.getClass() == NumericAttributeBinaryTest.class &&
                             (argmax(splitDecision.resultingClassDistributions[0]) == argmax(node.getChild(0).getObservedClassDistribution())
-                                    ||	argmax(splitDecision.resultingClassDistributions[1]) == argmax(node.getChild(1).getObservedClassDistribution()) )
-                    ){
+                                    || argmax(splitDecision.resultingClassDistributions[1]) == argmax(node.getChild(1).getObservedClassDistribution()))
+                    ) {
                         // change split but don't destroy the subtrees
                         for (int i = 0; i < splitDecision.numSplits(); i++) {
-                            ((EFDTSplitNode)newSplit).setChild(i, this.getChild(i));
+                            ((EFDTSplitNode) newSplit).setChild(i, this.getChild(i));
                         }
 
                     } else {
@@ -300,13 +289,13 @@ public class EFDT extends VFDT{
 
                             Node newChild = newLearningNode(splitDecision.resultingClassDistributionFromSplit(i));
 
-                            if(splitDecision.splitTest.getClass() == NominalAttributeBinaryTest.class
-                                    ||splitDecision.splitTest.getClass() == NominalAttributeMultiwayTest.class){
+                            if (splitDecision.splitTest.getClass() == NominalAttributeBinaryTest.class
+                                    || splitDecision.splitTest.getClass() == NominalAttributeMultiwayTest.class) {
                                 newChild.usedNominalAttributes = new ArrayList<Integer>(node.usedNominalAttributes); //deep copy
                                 newChild.usedNominalAttributes.add(splitDecision.splitTest.getAttsTestDependsOn()[0]);
                                 // no  nominal attribute should be split on more than once in the path
                             }
-                            ((EFDTSplitNode)newSplit).setChild(i, newChild);
+                            ((EFDTSplitNode) newSplit).setChild(i, newChild);
                         }
 
                         EFDT.this.activeLeafNodeCount--;
@@ -317,12 +306,12 @@ public class EFDT extends VFDT{
 
 
                     if (parent == null) {
-                        ((EFDTNode)newSplit).setRoot(true);
-                        ((EFDTNode)newSplit).setParent(null);
+                        ((EFDTNode) newSplit).setRoot(true);
+                        ((EFDTNode) newSplit).setParent(null);
                         EFDT.this.treeRoot = newSplit;
                     } else {
-                        ((EFDTNode)newSplit).setRoot(false);
-                        ((EFDTNode)newSplit).setParent(parent);
+                        ((EFDTNode) newSplit).setRoot(false);
+                        ((EFDTNode) newSplit).setParent(parent);
                         parent.setChild(parentIndex, newSplit);
                     }
                 }
@@ -341,8 +330,6 @@ public class EFDT extends VFDT{
     }
 
 
-
-
     @Override
     protected void attemptToSplit(ActiveLearningNode node, SplitNode parent,
                                   int parentIndex) {
@@ -356,18 +343,15 @@ public class EFDT extends VFDT{
             Arrays.sort(bestSplitSuggestions);
             boolean shouldSplit = false;
 
-            for (int i = 0; i < bestSplitSuggestions.length; i++){
+            for (int i = 0; i < bestSplitSuggestions.length; i++) {
 
-                if (bestSplitSuggestions[i].splitTest != null){
-                    if (!node.getInfogainSum().containsKey((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0])))
-                    {
+                if (bestSplitSuggestions[i].splitTest != null) {
+                    if (!node.getInfogainSum().containsKey((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]))) {
                         node.getInfogainSum().put((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]), 0.0);
                     }
                     double currentSum = node.getInfogainSum().get((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]));
                     node.getInfogainSum().put((bestSplitSuggestions[i].splitTest.getAttsTestDependsOn()[0]), currentSum + bestSplitSuggestions[i].merit);
-                }
-
-                else { // handle the null attribute
+                } else { // handle the null attribute
                     double currentSum = node.getInfogainSum().get(-1); // null split
                     node.getInfogainSum().put(-1, currentSum + bestSplitSuggestions[i].merit);
                 }
@@ -376,41 +360,36 @@ public class EFDT extends VFDT{
 
             if (bestSplitSuggestions.length < 2) {
                 shouldSplit = bestSplitSuggestions.length > 0;
-            }
-
-            else {
+            } else {
                 double hoeffdingBound = computeHoeffdingBound(splitCriterion.getRangeOfMerit(node.getClassDistributionAtTimeOfCreation()),
                         this.splitConfidenceOption.getValue(), node.getWeightSeen());
                 AttributeSplitSuggestion bestSuggestion = bestSplitSuggestions[bestSplitSuggestions.length - 1];
 
-                double bestSuggestionAverageMerit = node.getInfogainSum().get((bestSuggestion.splitTest.getAttsTestDependsOn()[0])) / node.getNumSplitAttempts();
+                double bestSuggestionAverageMerit;
                 double currentAverageMerit = node.getInfogainSum().get(-1) / node.getNumSplitAttempts();
 
                 // because this is an unsplit leaf. current average merit should be always zero on the null split.
 
-                if(bestSuggestion.splitTest == null){ // if you have a null split
+                if (bestSuggestion.splitTest == null) { // if you have a null split
                     bestSuggestionAverageMerit = node.getInfogainSum().get(-1) / node.getNumSplitAttempts();
-                } else{
+                } else {
                     bestSuggestionAverageMerit = node.getInfogainSum().get((bestSuggestion.splitTest.getAttsTestDependsOn()[0])) / node.getNumSplitAttempts();
                 }
 
-                if(bestSuggestion.merit < 1e-10){
+                if (bestSuggestion.merit < 1e-10) {
                     shouldSplit = false; // we don't use average here
-                }
-
-                else if ((bestSuggestionAverageMerit-currentAverageMerit)  >
+                } else if ((bestSuggestionAverageMerit - currentAverageMerit) >
                         hoeffdingBound
-                        || (hoeffdingBound < this.tieThresholdOption.getValue()))
-                {
-                    if(bestSuggestionAverageMerit-currentAverageMerit  < hoeffdingBound){
+                        || (hoeffdingBound < this.tieThresholdOption.getValue())) {
+                    if (bestSuggestionAverageMerit - currentAverageMerit < hoeffdingBound) {
                         // Placeholder to list this possibility
                     }
                     shouldSplit = true;
                 }
 
-                if(shouldSplit){
-                    for(Integer i : node.usedNominalAttributes){
-                        if(bestSuggestion.splitTest.getAttsTestDependsOn()[0] == i){
+                if (shouldSplit) {
+                    for (Integer i : node.usedNominalAttributes) {
+                        if (bestSuggestion.splitTest == null || bestSuggestion.splitTest.getAttsTestDependsOn().length == 0 || bestSuggestion.splitTest.getAttsTestDependsOn()[0] == i) {
                             shouldSplit = false;
                             break;
                         }
@@ -460,8 +439,8 @@ public class EFDT extends VFDT{
                 } else {
                     Node newSplit = newSplitNode(splitDecision.splitTest,
                             node.getObservedClassDistribution(), splitDecision.numSplits());
-                    ((EFDTSplitNode)newSplit).attributeObservers = node.attributeObservers; // copy the attribute observers
-                    ((EFDTSplitNode)newSplit).setInfogainSum(node.getInfogainSum());  // transfer infogain history, leaf to split
+                    ((EFDTSplitNode) newSplit).attributeObservers = node.attributeObservers; // copy the attribute observers
+                    ((EFDTSplitNode) newSplit).setInfogainSum(node.getInfogainSum());  // transfer infogain history, leaf to split
 
                     for (int i = 0; i < splitDecision.numSplits(); i++) {
 
@@ -469,13 +448,13 @@ public class EFDT extends VFDT{
 
                         Node newChild = newLearningNode(splitDecision.resultingClassDistributionFromSplit(i));
 
-                        if(splitDecision.splitTest.getClass() == NominalAttributeBinaryTest.class
-                                ||splitDecision.splitTest.getClass() == NominalAttributeMultiwayTest.class){
+                        if (splitDecision.splitTest.getClass() == NominalAttributeBinaryTest.class
+                                || splitDecision.splitTest.getClass() == NominalAttributeMultiwayTest.class) {
                             newChild.usedNominalAttributes = new ArrayList<Integer>(node.usedNominalAttributes); //deep copy
                             newChild.usedNominalAttributes.add(splitDecision.splitTest.getAttsTestDependsOn()[0]);
                             // no  nominal attribute should be split on more than once in the path
                         }
-                        ((EFDTSplitNode)newSplit).setChild(i, newChild);
+                        ((EFDTSplitNode) newSplit).setChild(i, newChild);
                     }
                     this.activeLeafNodeCount--;
                     this.decisionNodeCount++;
@@ -494,7 +473,7 @@ public class EFDT extends VFDT{
     }
 
 
-    public class EFDTLearningNode extends LearningNodeNBAdaptive implements EFDTNode{
+    public class EFDTLearningNode extends LearningNodeNBAdaptive implements EFDTNode {
 
         private boolean isRoot;
 
@@ -601,14 +580,14 @@ public class EFDT extends VFDT{
         return new EFDTSplitNode(splitTest, classObservations);
     }
 
-    private int argmax(double[] array){
+    protected int argmax(double[] array) {
 
         double max = array[0];
         int maxarg = 0;
 
-        for (int i = 1; i < array.length; i++){
+        for (int i = 1; i < array.length; i++) {
 
-            if(array[i] > max){
+            if (array[i] > max) {
                 max = array[i];
                 maxarg = i;
             }

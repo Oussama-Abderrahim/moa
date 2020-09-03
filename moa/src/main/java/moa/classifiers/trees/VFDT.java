@@ -779,7 +779,7 @@ public class VFDT extends AbstractClassifier implements MultiClassClassifier, Ca
 
                 if(shouldSplit){
                 	for(Integer i : node.usedNominalAttributes){
-                		if(bestSuggestion.splitTest.getAttsTestDependsOn()[0] == i){
+                        if (bestSuggestion.splitTest == null || bestSuggestion.splitTest.getAttsTestDependsOn().length == 0 || bestSuggestion.splitTest.getAttsTestDependsOn()[0] == i) {
                 			shouldSplit = false;
                 			break;
                 		}
